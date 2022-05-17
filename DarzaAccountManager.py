@@ -1,8 +1,16 @@
 import os
 import shutil
 
-from click import option
-
+def PrintTitle():
+    os.system('cls')
+    print(''' ██████╗██████╗  █████╗ ██████╗ 
+██╔════╝██╔══██╗██╔══██╗██╔══██╗
+██║     ██║  ██║███████║██████╔╝
+██║     ██║  ██║██╔══██║██╔══██╗
+╚██████╗██████╔╝██║  ██║██║  ██║
+ ╚═════╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+ ''')
+    
 def QueryMain():
     CheckFolder()
     PrintTitle()
@@ -20,15 +28,6 @@ def CheckFolder():
     except FileExistsError:
         return
     
-def PrintTitle():
-    os.system('cls')
-    print(''' ██████╗██████╗  █████╗ ██████╗ 
-██╔════╝██╔══██╗██╔══██╗██╔══██╗
-██║     ██║  ██║███████║██████╔╝
-██║     ██║  ██║██╔══██║██╔══██╗
-╚██████╗██████╔╝██║  ██║██║  ██║
- ╚═════╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
- ''')
     
 def QueryOption(options):
     PrintTitle()
