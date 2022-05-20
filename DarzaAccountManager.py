@@ -39,6 +39,7 @@ def QueryMain():
       
   
 
+
 def AddDirectory():
     PrintTitle()
     
@@ -51,7 +52,7 @@ def AddDirectory():
     
     config['gameDirectories'].update({name: path})
     SaveConfig()
-    LaunchGame()
+    QueryMain()
 
 def RunProcess(index):
     path = config['gameDirectories'][index]
@@ -66,11 +67,11 @@ def LaunchGame():
     options_list.append('Add a new game directory')
     
     option = QueryOption(options_list)
-    print(option)
-    if option == 3:
+    if option == options_list[-1]:
         AddDirectory()
+        
     RunProcess(options_list[option])
-    PrintTitle()
+    QueryMain()
     
     
 def CheckAll():
