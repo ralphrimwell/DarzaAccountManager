@@ -64,7 +64,7 @@ def LaunchGame():
     QueryMain()
     
 def QueryGamePath():
-    if bool(config['gameDirectories']) == False:
+    if not bool(config['gameDirectories']):
         AddDirectory()
     
     options = config['gameDirectories'].keys()
@@ -86,9 +86,13 @@ def CheckAll():
 
     accounts = os.listdir('Accounts')
     for i, account in enumerate(accounts):
-        print(f'[{i}] Running game with account: {account}')
-        ReplaceFile(account)
-        RunProcess(path)
+        option = input(f'[{i}] Running game with account: {account} [Y/N] ')
+        if option == 'Y' or option == 'y':
+            print(option)
+            ReplaceFile(account)
+            RunProcess(path)
+            
+
     
 def CheckFolder():
     try:
