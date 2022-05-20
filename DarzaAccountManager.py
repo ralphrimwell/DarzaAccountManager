@@ -14,9 +14,11 @@ def PrintTitle():
 def QueryMain():
     CheckFolder()
     PrintTitle()
-    option = QueryOption(["Change Account", "Launch Darza's Dominion", "Exit"])
+    option = QueryOption(["Change Account", "Save Account", "Launch Darza's Dominion", "Exit"])
     if option == 0:
         ChangeAccount()
+    elif option == 1:
+        SaveAccount()
     elif option == 2:
         return
     elif option == 3:
@@ -42,9 +44,19 @@ def QueryOption(options):
 def ChangeAccount():
     accounts = os.listdir('Accounts')
     option = QueryOption(accounts)
-    CopyAccount(accounts[option])
+    ReplaceFile(accounts[option])
+    QueryMain()
 
-def CopyAccount(account):
+def SaveAccount():
+    PrintTitle()
+    
+    path = f'C:/Users/{os.getlogin()}/Appdata/Local/RippleStudio/Darza/settings.dat'
+    name = input('What is the name of the account? ')
+    
+    shutil.copy(path, f'Accounts/{name}.dat')
+    QueryMain()
+
+def ReplaceFile(account):
     path = f'C:/Users/{os.getlogin()}/Appdata/Local/RippleStudio/Darza/settings.dat'
     
     shutil.copy(f'Accounts/{account}', path)
