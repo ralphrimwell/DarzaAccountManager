@@ -1,5 +1,15 @@
+from cgi import print_arguments
 import os
 import shutil
+import json
+import easygui
+
+#this is the default value, will be overwritten if config.json exists
+config = {
+  "gameDirectories": {
+  }
+}
+
 
 def PrintTitle():
     os.system('cls')
@@ -11,18 +21,60 @@ def PrintTitle():
  ╚═════╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
  ''')
     
+    
 def QueryMain():
     CheckFolder()
     PrintTitle()
-    option = QueryOption(["Change Account", "Save Account", "Launch Darza's Dominion", "Exit"])
+    option = QueryOption(["Change Account", "Check All Function", "Save Account", "Launch Darza's Dominion", "Exit"])
     if option == 0:
         ChangeAccount()
     elif option == 1:
         SaveAccount()
     elif option == 2:
-        return
+        SaveAccount()
     elif option == 3:
+        LaunchGame()
+    elif option == 4:
         exit()
+      
+  
+
+def AddDirectory():
+    PrintTitle()
+    
+    
+    print("[0] Select Darza's Dominion.exe")
+    path = easygui.fileopenbox("Select Darza's Dominion.exe")
+    if path == None:
+        QueryMain()
+    name = input('[0] Input name of directory ')
+    
+    config['gameDirectories'].update({name: path})
+    SaveConfig()
+    LaunchGame()
+
+def RunProcess(index):
+    path = config['gameDirectories'][index]
+    os.startfile(path)
+
+def LaunchGame():
+    if bool(config['gameDirectories']) == False:
+        AddDirectory()
+    
+    options = config['gameDirectories'].keys()
+    options_list = list(options)
+    options_list.append('Add a new game directory')
+    
+    option = QueryOption(options_list)
+    print(option)
+    if option == 3:
+        AddDirectory()
+    RunProcess(options_list[option])
+    PrintTitle()
+    
+    
+def CheckAll():
+    print("test")
     
 def CheckFolder():
     try:
@@ -60,6 +112,15 @@ def ReplaceFile(account):
     path = f'C:/Users/{os.getlogin()}/Appdata/Local/RippleStudio/Darza/settings.dat'
     
     shutil.copy(f'Accounts/{account}', path)
+
+def SaveConfig():
+    with open("config.json","w") as f:
+            f.write(json.dumps(config, indent=4))
     
 if __name__ == "__main__":
+    try:
+        config = json.load(open('config.json'))
+    except FileNotFoundError:
+        SaveConfig()
+        
     QueryMain()
