@@ -3,6 +3,7 @@ import os
 import shutil
 import json
 import easygui
+import subprocess
 
 #this is the default value, will be overwritten if config.json exists
 config = {
@@ -29,7 +30,7 @@ def QueryMain():
     if option == 0:
         ChangeAccount()
     elif option == 1:
-        SaveAccount()
+        CheckAll()
     elif option == 2:
         SaveAccount()
     elif option == 3:
@@ -54,11 +55,15 @@ def AddDirectory():
     SaveConfig()
     QueryMain()
 
-def RunProcess(index):
-    path = config['gameDirectories'][index]
-    os.startfile(path)
+def RunProcess(path):
+    subprocess.call(path)
 
 def LaunchGame():
+    path = QueryGamePath()
+    RunProcess(path)
+    QueryMain()
+    
+def QueryGamePath():
     if bool(config['gameDirectories']) == False:
         AddDirectory()
     
@@ -70,12 +75,18 @@ def LaunchGame():
     if option == options_list[-1]:
         AddDirectory()
         
-    RunProcess(options_list[option])
-    QueryMain()
-    
-    
+    path = config['gameDirectories'][options_list[option]]
+    return path
+
+
 def CheckAll():
-    print("test")
+    path = QueryGamePath()
+    PrintTitle()
+    accounts = os.listdir('Accounts')
+    for i, account in enumerate(accounts):
+        print(f'[{i}] Running game with account: {account}')
+        ReplaceFile(account)
+        RunProcess(path)
     
 def CheckFolder():
     try:
