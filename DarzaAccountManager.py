@@ -26,15 +26,15 @@ def PrintTitle():
 def QueryMain():
     CheckFolder()
     PrintTitle()
-    option = QueryOption(["Change Account", "Check All Function", "Save Account", "Launch Darza's Dominion", "Exit"])
+    option = QueryOption('Main menu', ["Launch Darza's Dominion", "Change Account", "Save Account", "Autoloot Accounts", "Exit"])
     if option == 0:
-        ChangeAccount()
+        LaunchGame()
     elif option == 1:
-        CheckAll()
+        ChangeAccount()
     elif option == 2:
         SaveAccount()
     elif option == 3:
-        LaunchGame()
+        CheckAll()
     elif option == 4:
         exit()
       
@@ -48,15 +48,15 @@ def AddDirectory():
     print("[0] Select Darza's Dominion.exe")
     path = easygui.fileopenbox("Select Darza's Dominion.exe")
     if path == None:
-        QueryMain()
+        return
     name = input('[0] Input name of directory ')
     
     config['gameDirectories'].update({name: path})
     SaveConfig()
-    QueryMain()
 
 def RunProcess(path):
     subprocess.call(path)
+
 
 def LaunchGame():
     path = QueryGamePath()
@@ -71,17 +71,19 @@ def QueryGamePath():
     options_list = list(options)
     options_list.append('Add a new game directory')
     
-    option = QueryOption(options_list)
+    option = QueryOption('Pick game directory', options_list)
     if option == options_list[-1]:
         AddDirectory()
         
-    path = config['gameDirectories'][options_list[option]]
+    path = config['gameDirectories'][options_list[option]] #can only use string as key not index dunno
     return path
 
 
 def CheckAll():
     path = QueryGamePath()
     PrintTitle()
+    print(f"[Account Looter - THIS DOESN'T WORK WITH STEAM]\n")
+
     accounts = os.listdir('Accounts')
     for i, account in enumerate(accounts):
         print(f'[{i}] Running game with account: {account}')
@@ -95,8 +97,9 @@ def CheckFolder():
         return
     
     
-def QueryOption(options):
+def QueryOption(name, options):
     PrintTitle()
+    print(f'[{name}]\n')
     for i, option in enumerate(options):
         print(f'[{i}] {option}')
         
@@ -107,9 +110,8 @@ def QueryOption(options):
     
 def ChangeAccount():
     accounts = os.listdir('Accounts')
-    option = QueryOption(accounts)
+    option = QueryOption('Change account', accounts)
     ReplaceFile(accounts[option])
-    QueryMain()
 
 def SaveAccount():
     PrintTitle()
@@ -118,7 +120,6 @@ def SaveAccount():
     name = input('What is the name of the account? ')
     
     shutil.copy(path, f'Accounts/{name}.dat')
-    QueryMain()
 
 def ReplaceFile(account):
     path = f'C:/Users/{os.getlogin()}/Appdata/Local/RippleStudio/Darza/settings.dat'
@@ -127,7 +128,7 @@ def ReplaceFile(account):
 
 def SaveConfig():
     with open("config.json","w") as f:
-            f.write(json.dumps(config, indent=4))
+        f.write(json.dumps(config, indent=4))
     
 if __name__ == "__main__":
     try:
@@ -135,4 +136,5 @@ if __name__ == "__main__":
     except FileNotFoundError:
         SaveConfig()
         
-    QueryMain()
+    while(True): #instead of calling querymain() to go back to menu
+        QueryMain()
