@@ -26,16 +26,18 @@ def PrintTitle():
 def QueryMain():
     CheckFolder()
     PrintTitle()
-    option = QueryOption('Main menu', ["Launch Darza's Dominion", "Change Account", "Save Account", "Autoloot Accounts", "Exit"])
+    option = QueryOption('Main menu', ["Launch Darza's Dominion", "Change Account", "Rename account", "Save Account", "Autoloot Accounts", "Exit"])
     if option == 0:
         LaunchGame()
     elif option == 1:
         ChangeAccount()
     elif option == 2:
-        SaveAccount()
+        RenameAccount()
     elif option == 3:
-        CheckAll()
+        SaveAccount()
     elif option == 4:
+        CheckAll()
+    elif option == 5:
         exit()
       
   
@@ -54,15 +56,17 @@ def AddDirectory():
     config['gameDirectories'].update({name: path})
     SaveConfig()
 
-def RunProcess(path):
-    subprocess.call(path)
+def RunProcess(path, wait=True):
+    if wait:
+        subprocess.call(path)
+    else:
+        subprocess.Popen(path)
 
 
 def LaunchGame():
     path = QueryGamePath()
-    RunProcess(path)
-    QueryMain()
-    
+    subprocess.Popen(path)
+
 def QueryGamePath():
     if not bool(config['gameDirectories']):
         AddDirectory()
@@ -90,7 +94,8 @@ def CheckAll():
         if option == 'Y' or option == 'y':
             print(option)
             ReplaceFile(account)
-            RunProcess(path)
+            subprocess.call(path)
+
             
 
     
@@ -116,6 +121,12 @@ def ChangeAccount():
     accounts = os.listdir('Accounts')
     option = QueryOption('Change account', accounts)
     ReplaceFile(accounts[option])
+
+def RenameAccount():
+    accounts = os.listdir('Accounts')
+    option = QueryOption('Rename account', accounts)
+    name = input(f'Input new name for {accounts[option]}: ')
+    os.rename(os.path.join('Accounts', accounts[option]), name + '.dat')
 
 def SaveAccount():
     PrintTitle()
