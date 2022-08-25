@@ -126,7 +126,7 @@ def RenameAccount():
     accounts = os.listdir('Accounts')
     option = QueryOption('Rename account', accounts)
     name = input(f'Input new name for {accounts[option]}: ')
-    os.rename(os.path.join('Accounts', accounts[option]), name + '.dat')
+    os.rename(os.path.join('Accounts', accounts[option]), os.path.join('Accounts',name + '.dat'))
 
 def SaveAccount():
     PrintTitle()
